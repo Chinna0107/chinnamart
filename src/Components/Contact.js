@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
+import config from "../Pages/config";
 
 function Contact() {
   // handle form submit
@@ -11,9 +12,12 @@ function Contact() {
     const name = form[0].value;
     const email = form[1].value;
     const message = form[2].value;
+    const apiUrl = process.env.NODE_ENV === 'development' 
+    ? config.LOCAL_BASE_URL
+    : config.BASE_URL;
 
     try {
-      const res = await axios.post("http://localhost:5000/api/contact", {
+      const res = await axios.post(`${apiUrl}/api/contact`, {
         name,
         email,
         message,

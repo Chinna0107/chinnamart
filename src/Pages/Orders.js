@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Package, MapPin, CheckCircle, Clock } from "lucide-react";
+import config from "./config";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const apiUrl = process.env.NODE_ENV === 'development' 
+    ? config.LOCAL_BASE_URL
+    : config.BASE_URL;
 
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:4000/api/orders/orders", {
+      const res = await fetch(`{apiUrl}/api/orders/orders`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

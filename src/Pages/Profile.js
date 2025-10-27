@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import config from "./config";
 
 function Profile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const apiUrl = process.env.NODE_ENV === 'development' 
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
+
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:4000/api/profile", {
+        const res = await fetch(`{apiUrl}/api/profile`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

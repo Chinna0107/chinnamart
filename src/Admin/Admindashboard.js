@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import config from "../Pages/config";
 
 function AdminDashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,13 +37,17 @@ function AdminDashboard() {
     fetchDashboardData(token);
   }, [navigate]);
 
+  const apiUrl = process.env.NODE_ENV === 'development' 
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
+
   const fetchDashboardData = async (token) => {
     try {
-      const paymentsRes = await axios.get("http://localhost:4000/admin/payments", {
+      const paymentsRes = await axios.get(`${apiUrl}admin/payments`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const usersRes = await axios.get("http://localhost:4000/admin/users", {
+      const usersRes = await axios.get(`${apiUrl}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

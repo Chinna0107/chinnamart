@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import swal from "sweetalert2";
-import config from "../config.js";
+import config from "./config";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -52,7 +52,7 @@ const handleVerifyOtp = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await axios.post("http://localhost:4000/api/verify-otp", {
+    const res = await axios.post(`${apiUrl}/api/verify-otp`, {
       email: formData.email,
       otp,
     });
@@ -85,7 +85,7 @@ const handleVerifyOtp = async (e) => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:4000/api/signup", formData);
+      await axios.post(`${apiUrl}/api/signup`, formData);
       alert("Signup successful! You can now login.");
       window.location.href = "/login";
     } catch (err) {

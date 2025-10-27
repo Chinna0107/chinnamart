@@ -3,17 +3,21 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import config from "./config";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const apiUrl = process.env.NODE_ENV === 'development' 
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
 
   const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await axios.post("http://localhost:4000/api/login", {
+    const res = await axios.post(`${apiUrl}/api/login`, {
       email,
       password,
     });
