@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import chinnamart from "./ChinnaMart.png";
 
 function Services() {
@@ -12,7 +13,13 @@ function Services() {
       }}
     >
       {/* Heading */}
-      <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        style={{ textAlign: "center", marginBottom: "2rem" }}
+      >
         <h2 style={{ fontSize: "2rem", fontWeight: "700", color: "#111827" }}>
           Our Delivery Services
         </h2>
@@ -20,10 +27,14 @@ function Services() {
           We ensure fast, reliable, and secure deliveries across regions, helping businesses reach
           their customers with ease.
         </p>
-      </div>
+      </motion.div>
 
       {/* Collaboration Highlight */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
         style={{
           display: "flex",
           flexWrap: "wrap",
@@ -36,9 +47,11 @@ function Services() {
           marginBottom: "2.5rem",
         }}
       >
-        <img
+        <motion.img
           src={chinnamart}
           alt="ChinnaMart"
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 200 }}
           style={{
             width: "160px",
             height: "auto",
@@ -56,26 +69,32 @@ function Services() {
             designed to handle high volumes while maintaining speed and quality.
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Our Services Grid */}
       <div className="services-grid">
-        <div className="service-card">
-          <h4>🚚 Fast Delivery</h4>
-          <p>Timely doorstep delivery ensuring customer satisfaction every time.</p>
-        </div>
-        <div className="service-card">
-          <h4>📦 Secure Handling</h4>
-          <p>Special care for fragile and valuable products during transit.</p>
-        </div>
-        <div className="service-card">
-          <h4>🌍 Wide Reach</h4>
-          <p>Expanding delivery coverage across cities and towns.</p>
-        </div>
-        <div className="service-card">
-          <h4>🤝 Trusted Partnership</h4>
-          <p>Collaborating with ChinnaMart to deliver quality service nationwide.</p>
-        </div>
+        {[
+          { title: "🚚 Fast Delivery", desc: "Timely doorstep delivery ensuring customer satisfaction every time." },
+          { title: "📦 Secure Handling", desc: "Special care for fragile and valuable products during transit." },
+          { title: "🌍 Wide Reach", desc: "Expanding delivery coverage across cities and towns." },
+          { title: "🤝 Trusted Partnership", desc: "Collaborating with ChinnaMart to deliver quality service nationwide." },
+        ].map((service, index) => (
+          <motion.div
+            key={index}
+            className="service-card"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.2, duration: 0.5 }}
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 12px 24px rgba(0,0,0,0.12)",
+            }}
+            viewport={{ once: true }}
+          >
+            <h4>{service.title}</h4>
+            <p>{service.desc}</p>
+          </motion.div>
+        ))}
       </div>
 
       {/* Responsive Styling */}
@@ -90,7 +109,6 @@ function Services() {
           border-radius: 12px;
           padding: 1.5rem;
           box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-          transition: transform 0.3s, box-shadow 0.3s;
           text-align: center;
         }
         .service-card h4 {
@@ -102,10 +120,6 @@ function Services() {
         .service-card p {
           font-size: 0.95rem;
           color: #4b5563;
-        }
-        .service-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 12px 24px rgba(0,0,0,0.12);
         }
         @media (max-width: 768px) {
           .services-grid {

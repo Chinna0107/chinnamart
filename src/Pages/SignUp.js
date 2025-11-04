@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import axios from "axios";
-import swal from "sweetalert2";
+import Swal from "sweetalert2";
+import { motion } from "framer-motion";
 import config from "./config";
 
 function SignUp() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    phone: "",
+    mobile: "",
     vehicleType: "",
-    vehicle_number: "",   // ✅ new field
+    vehicleNumber: "",
+    deliveryArea: "",
     password: "",
     confirmPassword: "",
-    delivery_area:" "
   });
-  const apiUrl = process.env.NODE_ENV === 'development' 
-    ? config.LOCAL_BASE_URL
-    : config.BASE_URL;
 
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState(1); // 1 = fill form, 2 = enter OTP, 3 = verified
+  const [step, setStep] = useState(1);
+  const apiUrl =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,7 +32,7 @@ function SignUp() {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      Swal.fire("Error", "Passwords do not match!", "error");
       return;
     }
 
@@ -38,67 +40,53 @@ function SignUp() {
       await axios.post(`${apiUrl}/api/send-otp`, {
         email: formData.email,
       });
-      alert("OTP sent to your email!");
+      Swal.fire("Success", "OTP sent to your email!", "success");
       setStep(2);
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to send OTP");
+      Swal.fire("Error", err.response?.data?.message || "Failed to send OTP", "error");
     }
   };
 
-  // Step 2: Verify OTP
-// ✅ UPDATED handleVerifyOtp — Signup will auto-trigger after OTP success
+  // Step 2: Verify OTP and Signup
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
 
-const handleVerifyOtp = async (e) => {
-  e.preventDefault();
-
-  try {
-    const res = await axios.post(`${apiUrl}/api/verify-otp`, {
-      email: formData.email,
-      otp,
-    });
-
-    if (res.data.token) {
-      alert("OTP verified successfully! Completing Signup...");
-
-      // ✅ Auto sign up after OTP verification
-      await axios.post("${apiUrl}/api/signup", {
-        name: formData.fullName,
+    try {
+      const res = await axios.post(`${apiUrl}/api/verify-otp`, {
         email: formData.email,
-        password: formData.password,
-        mobile: formData.mobile,
-        vehicle_number: formData.vehicleNumber,
-        vehicle_type: formData.vehicleType,
-        delivery_area: formData.deliveryArea,
+        otp,
       });
 
-      alert("Signup Successful! Please login.");
-      window.location.href = "/login"; // redirect to login screen
-    }
-  } catch (err) {
-    alert(err.response?.data?.error || "OTP verification failed");
-  }
-};
+      if (res.data.token) {
+        Swal.fire("Verified", "OTP verified successfully!", "success");
 
+        await axios.post(`${apiUrl}/api/signup`, {
+          name: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+          mobile: formData.mobile,
+          vehicle_number: formData.vehicleNumber,
+          vehicle_type: formData.vehicleType,
+          delivery_area: formData.deliveryArea,
+        });
 
-
-  // Step 3: Signup
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(`${apiUrl}/api/signup`, formData);
-      alert("Signup successful! You can now login.");
-      window.location.href = "/login";
+        Swal.fire("Success", "Signup successful! Please login.", "success");
+        window.location.href = "/login";
+      }
     } catch (err) {
-      alert(err.response?.data?.message || "Signup failed");
+      Swal.fire("Error", err.response?.data?.message || "OTP verification failed", "error");
     }
   };
 
   return (
-    <div
+    <motion.div
+      className="signup-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
       style={{
         display: "flex",
         height: "100vh",
-        width: "100%",
         justifyContent: "center",
         alignItems: "center",
         backgroundImage:
@@ -109,7 +97,10 @@ const handleVerifyOtp = async (e) => {
         padding: "1rem",
       }}
     >
-      <div
+      <motion.div
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
         style={{
           width: "400px",
           maxWidth: "100%",
@@ -121,7 +112,10 @@ const handleVerifyOtp = async (e) => {
           color: "#fff",
         }}
       >
-        <h2
+        <motion.h2
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
           style={{
             textAlign: "center",
             marginBottom: "1.5rem",
@@ -129,134 +123,54 @@ const handleVerifyOtp = async (e) => {
             fontWeight: "700",
           }}
         >
-          Sign Up
-        </h2>
+          Sign Up 🚀
+        </motion.h2>
 
+        {/* Step 1 - Send OTP */}
         {step === 1 && (
-          <form
+          <motion.form
             onSubmit={handleSendOtp}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
           >
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-              style={inputStyle}
-            />
+            <input type="text" name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required style={inputStyle} />
+            <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required style={inputStyle} />
+            <input type="tel" name="mobile" placeholder="Mobile Number" value={formData.mobile} onChange={handleChange} required style={inputStyle} />
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              style={inputStyle}
-            />
-
-            <input
-              type="tel"
-              name="mobile"
-              placeholder="Mobile Number"
-              value={formData.mobile}
-              onChange={handleChange}
-              required
-              style={inputStyle}
-            />
-
-            <select
-              name="vehicleType"
-              value={formData.vehicleType}
-              onChange={handleChange}
-              required
-              style={{ ...inputStyle, background: "rgba(255,255,255,0.9)" }}
-            >
+            <select name="vehicleType" value={formData.vehicleType} onChange={handleChange} required style={inputStyle}>
               <option value="">Select Vehicle Type</option>
               <option value="two-wheeler">Two Wheeler</option>
               <option value="four-wheeler">Four Wheeler</option>
             </select>
 
-            <input
-              type="text"
-              name="vehicleNumber"
-              placeholder="Vehicle Number (e.g. KA-01-AB-1234)"
-              value={formData.vehicleNumber}
-              onChange={handleChange}
-              required
-              style={inputStyle}
-            />
+            <input type="text" name="vehicleNumber" placeholder="Vehicle Number (e.g. KA-01-AB-1234)" value={formData.vehicleNumber} onChange={handleChange} required style={inputStyle} />
+            <input type="text" name="deliveryArea" placeholder="Delivery Area" value={formData.deliveryArea} onChange={handleChange} required style={inputStyle} />
+            <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required style={inputStyle} />
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required style={inputStyle} />
 
-            <input
-             type="text"
-             name="deliveryArea"
-             placeholder="Delivery Area"
-             value={formData.deliveryArea}
-             onChange={handleChange}
-             required
-             style={inputStyle}
-             />
-
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              style={inputStyle}
-            />
-
-            
-
-
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              style={inputStyle}
-            />
-
-            <button type="submit" style={buttonStyle}>
+            <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }} style={buttonStyle}>
               Send OTP
-            </button>
-          </form>
+            </motion.button>
+          </motion.form>
         )}
 
+        {/* Step 2 - Verify OTP */}
         {step === 2 && (
-          <form
+          <motion.form
             onSubmit={handleVerifyOtp}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
           >
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
-              style={inputStyle}
-            />
-            <button type="submit" style={buttonStyle}>
-              Verify OTP
-            </button>
-          </form>
-        )}
+            <input type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} required style={inputStyle} />
 
-        {step === 3 && (
-          <form
-            onSubmit={handleSignup}
-            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-          >
-            <p style={{ textAlign: "center" }}>✅ OTP Verified. Complete Signup.</p>
-            <button type="submit" style={buttonStyle}>
-              Complete Signup
-            </button>
-          </form>
+            <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }} style={buttonStyle}>
+              Verify OTP
+            </motion.button>
+          </motion.form>
         )}
 
         <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.95rem" }}>
@@ -265,8 +179,8 @@ const handleVerifyOtp = async (e) => {
             Login
           </a>
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -278,6 +192,7 @@ const inputStyle = {
   background: "rgba(255,255,255,0.9)",
   fontSize: "1rem",
   width: "100%",
+  color: "#000",
 };
 
 const buttonStyle = {

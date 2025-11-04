@@ -1,53 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Package, MapPin, CheckCircle, Clock } from "lucide-react";
+import axios from "axios";
 import config from "./config";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const apiUrl = process.env.NODE_ENV === 'development' 
-    ? config.LOCAL_BASE_URL
-    : config.BASE_URL;
 
+  const apiUrl =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
+
+  // ✅ Fetch Orders
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`{apiUrl}/api/orders/orders`, {
+      if (!token) throw new Error("No token found");
+
+      const res = await axios.get(`${apiUrl}/api/orders/orders`, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!res.ok) throw new Error("Failed to fetch orders");
-      const data = await res.json();
-      setOrders(data);
+      setOrders(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch Orders Error:", err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Mark Order as Delivered
   const markDelivered = async (order_id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `http://localhost:4000/api/orders/${order_id}/deliver`,
+      await axios.put(
+        `${apiUrl}/api/orders/${order_id}/deliver`,
+        {},
         {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-
-      if (!res.ok) throw new Error("Failed to update");
-      await fetchOrders();
+      fetchOrders(); // refresh
     } catch (err) {
-      console.error(err);
+      console.error("Update Order Error:", err.response?.data || err.message);
     }
   };
 
@@ -56,11 +55,7 @@ function Orders() {
   }, []);
 
   if (loading) {
-    return (
-      <div style={loadingStyle}>
-        Loading orders...
-      </div>
-    );
+    return <div style={loadingStyle}>Loading orders...</div>;
   }
 
   return (
@@ -79,7 +74,7 @@ function Orders() {
       <div style={ordersWrapper}>
         {orders.map((order, index) => (
           <motion.div
-            key={order.order_id}
+            key={order.order_id || order.id}
             style={orderCard}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -88,7 +83,7 @@ function Orders() {
             viewport={{ once: true }}
           >
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h2 style={orderId}>{order.id}</h2>
+              <h2 style={orderId}>{order.id || order.order_id}</h2>
               <span style={orderAmount}>₹{order.amount}</span>
             </div>
 
@@ -124,7 +119,7 @@ function Orders() {
   );
 }
 
-/* Styles (unchanged) */
+/* === same styles as before === */
 const loadingStyle = {
   minHeight: "100vh",
   display: "flex",
@@ -152,17 +147,8 @@ const headerStyle = {
   boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
 };
 
-const headerTitle = {
-  fontSize: "2rem",
-  fontWeight: "700",
-  marginTop: "1rem",
-};
-
-const headerSubtitle = {
-  fontSize: "1rem",
-  opacity: 0.9,
-};
-
+const headerTitle = { fontSize: "2rem", fontWeight: "700", marginTop: "1rem" };
+const headerSubtitle = { fontSize: "1rem", opacity: 0.9 };
 const ordersWrapper = {
   maxWidth: "900px",
   margin: "2rem auto",
@@ -170,38 +156,21 @@ const ordersWrapper = {
   display: "grid",
   gap: "1.5rem",
 };
-
 const orderCard = {
   background: "#fff",
   padding: "1.5rem",
   borderRadius: "12px",
   boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
 };
-
-const orderId = {
-  fontSize: "1.2rem",
-  fontWeight: "600",
-  color: "#111827",
-};
-
-const orderAmount = {
-  fontSize: "1rem",
-  fontWeight: "700",
-  color: "#2563eb",
-};
-
-const customerName = {
-  fontSize: "1rem",
-  fontWeight: "500",
-};
-
+const orderId = { fontSize: "1.2rem", fontWeight: "600", color: "#111827" };
+const orderAmount = { fontSize: "1rem", fontWeight: "700", color: "#2563eb" };
+const customerName = { fontSize: "1rem", fontWeight: "500" };
 const orderAddress = {
   display: "flex",
   alignItems: "center",
   fontSize: "0.95rem",
   color: "#374151",
 };
-
 const statusWrapper = (status) => ({
   marginTop: "1rem",
   display: "flex",
@@ -217,13 +186,11 @@ const statusWrapper = (status) => ({
   fontWeight: "600",
   width: "fit-content",
 });
-
 const actionsWrapper = {
   marginTop: "1rem",
   display: "flex",
   gap: "1rem",
 };
-
 const actionButton = {
   flex: 1,
   padding: "0.7rem",

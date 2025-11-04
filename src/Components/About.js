@@ -1,5 +1,6 @@
 import React from "react";
-import ceo from "./chinna3.png"
+import { motion } from "framer-motion";
+import ceo from "./chinna3.png";
 
 function About() {
   return (
@@ -16,7 +17,11 @@ function About() {
       }}
     >
       {/* Left Side: CEO Image */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
         style={{
           flex: "1 1 300px",
           display: "flex",
@@ -24,9 +29,11 @@ function About() {
           marginBottom: "2rem",
         }}
       >
-        <img
+        <motion.img
           src={ceo}
           alt="CEO"
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 150 }}
           style={{
             width: "280px",
             height: "280px",
@@ -35,21 +42,59 @@ function About() {
             boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
           }}
         />
-      </div>
+      </motion.div>
 
       {/* Right Side: Description */}
-      <div style={{ flex: "2 1 500px", padding: "0 1rem" }}>
-        <h2 style={{ fontSize: "2rem", fontWeight: "700", marginBottom: "1rem", color: "#111827" }}>
+      <motion.div
+        initial={{ opacity: 0, x: 60 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        style={{ flex: "2 1 500px", padding: "0 1rem" }}
+      >
+        <motion.h2
+          initial={{ y: -20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          style={{
+            fontSize: "2rem",
+            fontWeight: "700",
+            marginBottom: "1rem",
+            color: "#111827",
+          }}
+        >
           About Our Company
-        </h2>
-        <p style={{ fontSize: "1.05rem", lineHeight: "1.7", color: "#4b5563" }}>
-          At <strong>ChinnaMart</strong>, We are taking fresh vegetables and fruits from the farmers . As sson as possible the diary productss are also coming from our own brand . Until then we are moving with the outers .By this ChinnaMart Delivery Partners we are transporting the fresh vegetables,fruits,diary products and some chinna's special products to the customer.    
-          <br /><br />
-          Our CEO, <strong>HEMANTH KANCHARLA</strong>,started this with great passion and dedication. He believes that the farmer is the one who is responsible and didn't think for the profits.
-          This project is started to support the farmers from the middle persons .
-        </p>
+        </motion.h2>
 
-        <blockquote
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: true }}
+          style={{
+            fontSize: "1.05rem",
+            lineHeight: "1.7",
+            color: "#4b5563",
+          }}
+        >
+          At <strong>ChinnaMart</strong>, we are taking fresh vegetables and fruits directly from farmers.
+          Very soon, our own dairy products will be available too. Until then, we are collaborating
+          with trusted partners. Through <strong>ChinnaMart Delivery Partners</strong>, we transport
+          fresh vegetables, fruits, dairy products, and <strong>Chinna’s special products</strong> to customers
+          safely and efficiently.
+          <br />
+          <br />
+          Our CEO, <strong>Hemanth Kancharla</strong>, started this initiative with passion and dedication.
+          He believes that farmers are the real heroes who deserve fair value for their work.
+          This project aims to remove middlemen and empower farmers directly.
+        </motion.p>
+
+        <motion.blockquote
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
           style={{
             marginTop: "1.5rem",
             padding: "1rem 1.5rem",
@@ -60,9 +105,9 @@ function About() {
             borderRadius: "6px",
           }}
         >
-          "Look Forward - To Shine to be a Leader"
-        </blockquote>
-      </div>
+          "Look Forward — To Shine, To Be a Leader."
+        </motion.blockquote>
+      </motion.div>
 
       {/* Responsive Styling */}
       <style>{`
