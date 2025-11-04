@@ -37,13 +37,15 @@ function SignUp() {
     }
 
     try {
-      await axios.post(`${apiUrl}/api/send-otp`, {
-        email: formData.email,
-      });
+      await axios.post(`${apiUrl}/api/send-otp`, { email: formData.email });
       Swal.fire("Success", "OTP sent to your email!", "success");
       setStep(2);
     } catch (err) {
-      Swal.fire("Error", err.response?.data?.message || "Failed to send OTP", "error");
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Failed to send OTP",
+        "error"
+      );
     }
   };
 
@@ -74,7 +76,11 @@ function SignUp() {
         window.location.href = "/login";
       }
     } catch (err) {
-      Swal.fire("Error", err.response?.data?.message || "OTP verification failed", "error");
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "OTP verification failed",
+        "error"
+      );
     }
   };
 
@@ -89,10 +95,7 @@ function SignUp() {
         height: "100vh",
         justifyContent: "center",
         alignItems: "center",
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1950&q=80')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        background: "linear-gradient(135deg, #1e3a8a, #2563eb, #60a5fa)",
         fontFamily: "Inter, sans-serif",
         padding: "1rem",
       }}
@@ -135,20 +138,20 @@ function SignUp() {
             transition={{ duration: 0.5 }}
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
           >
-            <input type="text" name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required style={inputStyle} />
-            <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required style={inputStyle} />
-            <input type="tel" name="mobile" placeholder="Mobile Number" value={formData.mobile} onChange={handleChange} required style={inputStyle} />
+            <motion.input {...inputMotionProps} type="text" name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required style={inputStyle} />
+            <motion.input {...inputMotionProps} type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required style={inputStyle} />
+            <motion.input {...inputMotionProps} type="tel" name="mobile" placeholder="Mobile Number" value={formData.mobile} onChange={handleChange} required style={inputStyle} />
 
-            <select name="vehicleType" value={formData.vehicleType} onChange={handleChange} required style={inputStyle}>
+            <motion.select {...inputMotionProps} name="vehicleType" value={formData.vehicleType} onChange={handleChange} required style={inputStyle}>
               <option value="">Select Vehicle Type</option>
               <option value="two-wheeler">Two Wheeler</option>
               <option value="four-wheeler">Four Wheeler</option>
-            </select>
+            </motion.select>
 
-            <input type="text" name="vehicleNumber" placeholder="Vehicle Number (e.g. KA-01-AB-1234)" value={formData.vehicleNumber} onChange={handleChange} required style={inputStyle} />
-            <input type="text" name="deliveryArea" placeholder="Delivery Area" value={formData.deliveryArea} onChange={handleChange} required style={inputStyle} />
-            <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required style={inputStyle} />
-            <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required style={inputStyle} />
+            <motion.input {...inputMotionProps} type="text" name="vehicleNumber" placeholder="Vehicle Number (e.g. KA-01-AB-1234)" value={formData.vehicleNumber} onChange={handleChange} required style={inputStyle} />
+            <motion.input {...inputMotionProps} type="text" name="deliveryArea" placeholder="Delivery Area" value={formData.deliveryArea} onChange={handleChange} required style={inputStyle} />
+            <motion.input {...inputMotionProps} type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required style={inputStyle} />
+            <motion.input {...inputMotionProps} type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required style={inputStyle} />
 
             <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }} style={buttonStyle}>
               Send OTP
@@ -165,7 +168,15 @@ function SignUp() {
             transition={{ duration: 0.5 }}
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
           >
-            <input type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} required style={inputStyle} />
+            <motion.input
+              {...inputMotionProps}
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+              style={inputStyle}
+            />
 
             <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }} style={buttonStyle}>
               Verify OTP
@@ -173,16 +184,26 @@ function SignUp() {
           </motion.form>
         )}
 
-        <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.95rem" }}>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.95rem" }}
+        >
           Already have an account?{" "}
           <a href="/login" style={{ color: "#93c5fd", fontWeight: "600" }}>
             Login
           </a>
-        </p>
+        </motion.p>
       </motion.div>
     </motion.div>
   );
 }
+
+const inputMotionProps = {
+  whileFocus: { scale: 1.02 },
+  transition: { duration: 0.2 },
+};
 
 const inputStyle = {
   padding: "0.9rem",
