@@ -21,7 +21,7 @@ import Admindashboard from "./Admin/Admindashboard";
 import AdminOrders from "./Admin/AdminOrders";
 import AdminPayments from "./Admin/AdminPayments";
 import AdminProfile from "./Admin/AdminPofile";
-
+import AdminWallet from "./Admin/paymentDelivery";
 
 function App() {
   const token=localStorage.getItem('token');
@@ -53,6 +53,7 @@ function App() {
         <Route path="/admin-orders" element={<AdminOrders/>}/>
         <Route path="/admin-payments" element={<AdminPayments/>}/>
         <Route path="/admin-profile" element={<AdminProfile/>}/>
+        <Route path="/admin-payments for delivery" element={<AdminWallet/>}/>
       </Routes>
       <Footer/>
     </Router>

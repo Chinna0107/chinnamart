@@ -97,6 +97,7 @@ function AdminDashboard() {
           <a href="/admin-orders" style={navLink}><List size={18} /> Orders</a>
           <a href="/admin-payments" style={navLink}><CreditCard size={18} /> Payments</a>
           <a href="/admin-profile" style={navLink}><User size={18} /> Profile</a>
+          <a href="/admin-payments for delivery" style={navLink}><CreditCard size={18} /> Payments for Delivery</a>
           <button onClick={handleLogout} style={logoutBtn}><LogOut size={18} /> Logout</button>
         </nav>
 
