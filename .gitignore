@@ -1,7 +1,1 @@
-node_modules/
-build/
-.cache/
-dist/
-.vite/
-.env
-.env.local
+node_modules

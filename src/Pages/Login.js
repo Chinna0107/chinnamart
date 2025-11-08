@@ -3,16 +3,15 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import config from "./config";
+import config from "../Pages/config";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const apiUrl =
-    process.env.NODE_ENV === "development"
-      ? config.LOCAL_BASE_URL
-      : config.BASE_URL;
+  const apiUrl = process.env.NODE_ENV === "development"
+  ? config.LOCAL_BASE_URL
+  : config.BASE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
