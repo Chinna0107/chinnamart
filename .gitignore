@@ -1,8 +1,7 @@
-# Node modules
 node_modules/
-
-# Vite/webpack/cache
-.cache/
-.vite/
-dist/
 build/
+.cache/
+dist/
+.vite/
+.env
+.env.local
