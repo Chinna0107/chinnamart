@@ -52,7 +52,7 @@ function Orders() {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [fetchOrders]);
 
   if (loading) {
     return <div style={loadingStyle}>Loading orders...</div>;

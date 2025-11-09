@@ -33,7 +33,7 @@ function Profile() {
     };
 
     fetchProfile();
-  }, []);
+  }, [apiUrl]);
 
   if (loading) {
     return <div style={loadingStyle}>Loading profile...</div>;

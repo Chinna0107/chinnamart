@@ -35,7 +35,7 @@ function AdminDashboard() {
       return;
     }
     fetchDashboardData(token);
-  }, [navigate]);
+  }, [navigate,fetchDashboardData]);
 
   const apiUrl = process.env.NODE_ENV === 'development' 
       ? config.LOCAL_BASE_URL
